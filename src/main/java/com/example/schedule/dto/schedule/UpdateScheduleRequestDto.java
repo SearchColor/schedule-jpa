@@ -1,19 +1,18 @@
 package com.example.schedule.dto.schedule;
 
+
 import lombok.Getter;
 
 @Getter
-public class CreateScheduleRequestDto {
-
-    private final String username;
+public class UpdateScheduleRequestDto {
+    private final String password;
 
     private final String title;
 
     private final String detail;
 
-
-    public CreateScheduleRequestDto(String username, String title, String detail) {
-        this.username = username;
+    public UpdateScheduleRequestDto(String password, String title, String detail) {
+        this.password = password;
         this.title = title;
         this.detail = detail;
     }

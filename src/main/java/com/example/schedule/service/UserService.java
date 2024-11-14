@@ -1,6 +1,7 @@
 package com.example.schedule.service;
 
 
+import com.example.schedule.dto.user.LoginResponseDto;
 import com.example.schedule.dto.user.SignUpResponseDto;
 import com.example.schedule.dto.user.UserResponseDto;
 import com.example.schedule.entity.User;
@@ -49,6 +50,20 @@ public class UserService {
 
         userRepository.delete(findUser);
     }
+
+    public LoginResponseDto findUserByEmailAndPasswordOrElseThrow(String email , String password){
+        Optional<User> optionalUser = userRepository.findUserByEmailAndPassword(email, password);
+        if (optionalUser.isEmpty() ){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED , "Failed longin");
+        }
+        User findUser = optionalUser.get();
+
+
+
+        return new LoginResponseDto(findUser.getId() , findUser.getUsername());
+    }
+
+
 
 
 }
