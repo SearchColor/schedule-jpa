@@ -7,10 +7,18 @@ import com.example.schedule.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -19,7 +27,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponseDto> signUP(@RequestBody SignUpRequestDto requestDto){
+    public ResponseEntity<?> signUP(
+            @Validated @RequestBody SignUpRequestDto requestDto,
+            BindingResult bindingResult
+    ){
+        //Validation 예외 처리
+        ResponseEntity<?> errorMap = getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
 
         SignUpResponseDto signUpResponseDto =
                 userService.signUp(
@@ -31,9 +45,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> loginResponseDtoResponseEntity(
-            @RequestBody LoginRequestDto requestDto,
+    public ResponseEntity<?> loginResponseDtoResponseEntity(
+            @Validated @RequestBody LoginRequestDto requestDto,
+            BindingResult bindingResult,
             HttpServletRequest request){
+
+        //Validation 예외 처리
+        ResponseEntity<?> errorMap = getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
+
+
         LoginResponseDto loginResponseDto =
                 userService.findUserByEmailAndPasswordOrElseThrow(
                         requestDto.getEmail(),
@@ -47,6 +68,20 @@ public class UserController {
         session.setAttribute(Const.LOGIN_USER, loginUser);
 
         return new ResponseEntity<>(loginResponseDto , HttpStatus.OK);
+    }
+
+
+    private ResponseEntity<?> getResponseEntity(BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+
+            for(FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+
+            return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+        }
+        return null;
     }
 
     @PostMapping("/logout")

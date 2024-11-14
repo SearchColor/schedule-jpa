@@ -24,6 +24,8 @@ public class WebConfig implements WebMvcConfigurer {
         return filterRegistrationBean;
     }
 
+
+    // 로그인 필터(session 유무 확인)
     @Bean
     public FilterRegistrationBean loginFilter(){
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();

@@ -10,9 +10,14 @@ import com.example.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/schedules")
@@ -22,7 +27,12 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> save(@RequestBody CreateScheduleRequestDto requestDto){
+    public ResponseEntity<?> save(
+            @Validated @RequestBody CreateScheduleRequestDto requestDto,
+            BindingResult bindingResult){
+
+        ResponseEntity<?> errorMap = getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
 
         ScheduleResponseDto scheduleResponseDto =
                 scheduleService.save(
@@ -51,10 +61,15 @@ public class ScheduleController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateTitleAndDetail(
+    public ResponseEntity<?> updateTitleAndDetail(
             @PathVariable Long id,
-            @RequestBody UpdateScheduleRequestDto requestDto
+            @Validated @RequestBody UpdateScheduleRequestDto requestDto,
+            BindingResult bindingResult
             ){
+
+        ResponseEntity<?> errorMap = getResponseEntity(bindingResult);
+        if (errorMap != null) return errorMap;
+
         scheduleService.updateSchedule(id, requestDto.getPassword(),requestDto.getTitle(),requestDto.getDetail());
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -65,6 +80,21 @@ public class ScheduleController {
 
         scheduleService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    //Validation 예외 error 생성
+    private ResponseEntity<?> getResponseEntity(BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+
+            for(FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+
+            return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
+        }
+        return null;
     }
 
 }
