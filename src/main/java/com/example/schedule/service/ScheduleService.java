@@ -11,6 +11,10 @@ import com.example.schedule.repository.ScheduleRepository;
 import com.example.schedule.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -45,6 +49,12 @@ public class ScheduleService {
                 .map(ScheduleResponseDto::toDto)
                 .toList();
     }
+
+    //paging 처리
+    public List<Schedule>findScheduleByPageRequest(Pageable pageable){
+        return scheduleRepository.findAll(pageable).getContent();
+    }
+
 
     public ScheduleWithNameResponseDto findById(Long id){
 

@@ -8,6 +8,10 @@ import com.example.schedule.dto.schedule.UpdateScheduleRequestDto;
 import com.example.schedule.entity.Schedule;
 import com.example.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/schedules")
 @RequiredArgsConstructor
@@ -44,12 +49,24 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> findAll() {
+    public ResponseEntity<List<ScheduleResponseDto>> findAll(){
 
         List<ScheduleResponseDto> scheduleResponseDtoList = scheduleService.findAll();
 
         return new ResponseEntity<>(scheduleResponseDtoList, HttpStatus.OK);
     }
+
+
+
+    @GetMapping("/paging")
+    public List<Schedule> findScheduleByPageRequest(
+            @PageableDefault(size = 10 , sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ){
+        log.info("sorted = {}" ,pageable.getSort());
+        return scheduleService.findScheduleByPageRequest(pageable);
+    }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ScheduleWithNameResponseDto> findById(@PathVariable Long id){

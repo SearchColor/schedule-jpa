@@ -3,10 +3,14 @@ package com.example.schedule.repository;
 import com.example.schedule.entity.Schedule;
 import com.example.schedule.errors.errorcode.ErrorCode;
 import com.example.schedule.errors.exception.CustomException;
+import org.hibernate.query.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.stereotype.Repository;
 
+import java.awt.print.Pageable;
+import java.util.List;
+
+@Repository
 public interface ScheduleRepository extends JpaRepository<Schedule , Long> {
 
 
@@ -15,4 +19,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule , Long> {
                 .orElseThrow(()->
                         new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
     }
+
+
+
+
+
 }

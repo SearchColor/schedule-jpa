@@ -13,7 +13,6 @@ import static com.example.schedule.errors.errorcode.ErrorCode.USER_NOT_FOUND;
 public interface UserRepository extends JpaRepository<User , Long> {
 
     Optional<User> findUserByUsername(String username);
-    Optional<User> findUserByEmailAndPassword(String email , String  password);
     Optional<User> findUserByEmail(String email);
 
     default User findByIdOrElseThrow(Long id){
@@ -28,15 +27,5 @@ public interface UserRepository extends JpaRepository<User , Long> {
                         new CustomException(USERNAME_NOT_FOUND));
     }
 
-//    default User findUserByEmailOrElseThrow(String email){
-//        return findUserByEmail(email)
-//                .orElseThrow(()->
-//                new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist email = "+email));
-//    }
-//
-//    default User findUserByEmailAndPasswordOrElseThrow(String email , String  password){
-//        return findUserByEmailAndPassword(email,password)
-//                .orElseThrow(()->
-//                        new ResponseStatusException(HttpStatus.NOT_FOUND,"Does not exist user"));
-//    }
+
 }
