@@ -12,11 +12,11 @@ public class CreateScheduleRequestDto {
     @Size(min = 1, max = 5, message = "username 은 1~5 글자여야 합니다.")
     private final String username;
 
-    @NotBlank(message = "username 은 필수값 입니다.")
+    @NotBlank(message = "title 은 필수값 입니다.")
     @Size(min = 1, max = 10, message = "title 은 10글자 이내여야 합니다.")
     private final String title;
 
-    @NotBlank(message = "username 은 필수값 입니다.")
+    @NotBlank(message = "detail 은 필수값 입니다.")
     @Size(min = 1, max = 20, message = "detail 은 20글자 이내여야 합니다.")
     private final String detail;
 

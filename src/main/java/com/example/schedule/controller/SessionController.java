@@ -30,6 +30,8 @@ public class SessionController {
         UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
 
 
+
+
         return "세션 조회 성공!"+loginUser.getUsername();
     }
 

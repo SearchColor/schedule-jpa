@@ -27,7 +27,6 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
 
-
     public ScheduleResponseDto save(String username, String title, String detail){
 
         User findUser = userRepository.findUserByUsernameOrElseThrow(username);

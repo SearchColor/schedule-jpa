@@ -25,6 +25,7 @@ import static com.example.schedule.errors.errorcode.ErrorCode.*;
 public class UserService {
 
     private final UserRepository userRepository;
+
     PasswordEncoder passwordEncoder = new PasswordEncoder();
 
     public SignUpResponseDto signUp(String username , String password , String email){
