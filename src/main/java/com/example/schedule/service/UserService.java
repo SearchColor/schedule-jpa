@@ -1,10 +1,12 @@
 package com.example.schedule.service;
 
 
+import com.example.schedule.config.PasswordEncoder;
 import com.example.schedule.dto.user.LoginResponseDto;
 import com.example.schedule.dto.user.SignUpResponseDto;
 import com.example.schedule.dto.user.UserResponseDto;
 import com.example.schedule.entity.User;
+import com.example.schedule.errors.exception.CustomException;
 import com.example.schedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,15 +18,20 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
+import static com.example.schedule.errors.errorcode.ErrorCode.*;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    PasswordEncoder passwordEncoder = new PasswordEncoder();
 
     public SignUpResponseDto signUp(String username , String password , String email){
 
-        User user = new User(username , password , email);
+        //password 암호화
+        String encodePassword = passwordEncoder.encode(password);
+        User user = new User(username , encodePassword , email);
 
         User saveUser = userRepository.save(user);
 
@@ -36,7 +43,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND , "Does not exist id = " + id);
+            throw new CustomException(USER_NOT_FOUND);
         }
 
         User findUser = optionalUser.get();
@@ -52,14 +59,13 @@ public class UserService {
     }
 
     public LoginResponseDto findUserByEmailAndPasswordOrElseThrow(String email , String password){
-        Optional<User> optionalUser = userRepository.findUserByEmailAndPassword(email, password);
-        if (optionalUser.isEmpty() ){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED , "Failed longin");
-        }
+
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
         User findUser = optionalUser.get();
 
-
-
+        if (!passwordEncoder.matches(password , findUser.getPassword())){
+            throw new CustomException(UNAUTHORIZED_PASSWORD);
+        }
         return new LoginResponseDto(findUser.getId() , findUser.getUsername());
     }
 

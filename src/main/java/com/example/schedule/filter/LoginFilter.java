@@ -1,5 +1,7 @@
 package com.example.schedule.filter;
 
+import com.example.schedule.errors.errorcode.ErrorCode;
+import com.example.schedule.errors.exception.CustomException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

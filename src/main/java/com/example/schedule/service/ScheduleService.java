@@ -1,10 +1,12 @@
 package com.example.schedule.service;
 
 
+import com.example.schedule.config.PasswordEncoder;
 import com.example.schedule.dto.schedule.ScheduleResponseDto;
 import com.example.schedule.dto.schedule.ScheduleWithNameResponseDto;
 import com.example.schedule.entity.Schedule;
 import com.example.schedule.entity.User;
+import com.example.schedule.errors.exception.CustomException;
 import com.example.schedule.repository.ScheduleRepository;
 import com.example.schedule.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -15,12 +17,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static com.example.schedule.errors.errorcode.ErrorCode.UNAUTHORIZED_PASSWORD;
+
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
 
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
+
 
 
     public ScheduleResponseDto save(String username, String title, String detail){
@@ -54,9 +59,10 @@ public class ScheduleService {
     public void updateSchedule(Long id, String password, String title, String detail){
         Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
         User writer = findSchedule.getUser();
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
 
-        if (!writer.getPassword().equals(password)){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(password , writer.getPassword())){
+            throw new CustomException(UNAUTHORIZED_PASSWORD);
         }
 
         findSchedule.updateTitleAndDetail(title, detail);
