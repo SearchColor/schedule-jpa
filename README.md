@@ -18,4 +18,4 @@
 
 User 등록
 
-[스크린샷 2024-11-15 오전 5 27 04](https://github.com/SearchColor/schedule-jpa/issues/1#issue-2659964595)
+![스크린샷 2024-11-15 오전 5 27 04](https://github.com/SearchColor/schedule-jpa/issues/1#issue-2659964595)
