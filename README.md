@@ -506,8 +506,29 @@ status code :
 401(UNAUTHORIZED) : 권한 예외
 404(NOT_FOUND) : id 조회 실패
 
+---
+
+### password 암호화
 
 
+- passwordEncoder 를 사용하여 패스워드를 encode 
+    ```java
+        String encodePassword = passwordEncoder.encode(password);
+        User user = new User(username , encodePassword , email);
+        User saveUser = userRepository.save(user);
+    ```
+
+- matches() method 를 사용하여 판별
+    ```java
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
+        if (!passwordEncoder.matches(password , writer.getPassword())){
+              throw new CustomException(UNAUTHORIZED_PASSWORD);
+        }
+    ```
+
+
+
+---
 ERD
 ==
 
