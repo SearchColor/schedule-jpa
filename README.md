@@ -410,12 +410,9 @@ method : GET
 
 URI : /comments/{id}
 
-request :
+request : - 
 
-    {
-        "scheduleid" : 1,
-        "detail" : "user1댓글"
-    }
+    
 
 response :
 
