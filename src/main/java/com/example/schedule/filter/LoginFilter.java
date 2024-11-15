@@ -2,14 +2,21 @@ package com.example.schedule.filter;
 
 import com.example.schedule.errors.errorcode.ErrorCode;
 import com.example.schedule.errors.exception.CustomException;
+import com.example.schedule.errors.response.ErrorResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.PatternMatchUtils;
 
+import javax.lang.model.type.ErrorType;
 import java.io.IOException;
+
+import static com.example.schedule.errors.errorcode.ErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 public class LoginFilter implements Filter {
@@ -30,7 +37,8 @@ public class LoginFilter implements Filter {
             HttpSession session = httpRequest.getSession(false);
 
             if (session == null ){
-                throw new RuntimeException("로그인 해주세요");
+//               throw new CustomException(USER_NOT_FOUND);
+               throw new RuntimeException("로그인해주세요");
             }
             //로그인 성공로직
             log.info("로그인에 성공했습니다");
@@ -42,4 +50,6 @@ public class LoginFilter implements Filter {
     private boolean isWhiteList(String requestURI){
         return PatternMatchUtils.simpleMatch(WHITE_LIST,requestURI);
     }
+
+
 }

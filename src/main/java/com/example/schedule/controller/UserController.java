@@ -107,9 +107,12 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id,HttpServletRequest request){
 
-        userService.delete(id);
+        HttpSession session = request.getSession(false);
+        UserResponseDto loginUser = (UserResponseDto) session.getAttribute(Const.LOGIN_USER);
+
+        userService.delete(id , loginUser.getUsername());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
