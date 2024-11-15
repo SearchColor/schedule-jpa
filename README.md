@@ -365,14 +365,149 @@ response :
         "message": "해당 id 로 인한 일정정보를 찾을 수 없습니다"
     }
 
+---
+
+
+댓글 등록
+
+method : POST
+
+URI : /comments
+
+request :
+
+    {
+        "scheduleid" : 1,
+        "detail" : "user1댓글"
+    }
+
+response :
+
+    //정상 등록 예시
+    
+    {
+        "id": 1,
+        "scheduleid": 1,
+        "username": "user1",
+        "detail": "user1댓글"
+    }
+
+    //실패 예시
+    {
+        "timestamp": "2024-11-15T13:06:29.784908",
+        "status": 404,
+        "error": "NOT_FOUND",
+        "code": "SCHEDULE_NOT_FOUND",
+        "message": "해당 id 로 인한 일정정보를 찾을 수 없습니다"
+    }
+
+
+---
+
+댓글 조회
+
+method : GET
+
+URI : /comments/{id}
+
+request :
+
+    {
+        "scheduleid" : 1,
+        "detail" : "user1댓글"
+    }
+
+response :
+
+    //정상 등록 예시
+    
+    {
+        "id": 1,
+        "scheduleid": 7,
+        "username": "user1",
+        "detail": "user1댓글"
+    }
+
+    //실패 예시
+    {
+        "timestamp": "2024-11-15T13:07:39.71697",
+        "status": 404,
+        "error": "NOT_FOUND",
+        "code": "COMMENT_NOT_FOUND",
+        "message": "해당 id 로 인한 댓글정보를 찾을 수 없습니다"
+    }
+
+---
+
+댓글 수정
+
+method : PUT
+
+URI : /comments/{id}
+
+request :
+
+    {
+        "detail" : "dfdfdfdf"
+    }
+
+response :
+
+    //성공 예시
+    
+    1
+
+    //실패 예시
+    {
+        "timestamp": "2024-11-15T13:11:36.239848",
+        "status": 401,
+        "error": "UNAUTHORIZED",
+        "code": "UNAUTHORIZED_USER",
+        "message": "권한이 없습니다. 해당유저만 가능합니다."
+    }
+
 status code :
 
 200(OK) : 정상
 
-404(NOT_FOUND) : 실패
+400(Bad_Request) : validation 예외
+401(UNAUTHORIZED) : 권한 예외
+404(NOT_FOUND) : id 조회 실패
+
+---
+
+댓글 삭제
+
+method : DELETE
+
+URI : /comments/{id}
+
+request :  -
 
 
 
+response :
+
+    //성공 예시
+    
+    1
+
+    //실패 예시
+    {
+        "timestamp": "2024-11-15T13:11:36.239848",
+        "status": 401,
+        "error": "UNAUTHORIZED",
+        "code": "UNAUTHORIZED_USER",
+        "message": "권한이 없습니다. 해당유저만 가능합니다."
+    }
+
+status code :
+
+200(OK) : 정상
+
+
+401(UNAUTHORIZED) : 권한 예외
+404(NOT_FOUND) : id 조회 실패
 
 
 
