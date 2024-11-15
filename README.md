@@ -525,6 +525,70 @@ status code :
               throw new CustomException(UNAUTHORIZED_PASSWORD);
         }
     ```
+---
+
+### Paging
+
+@PageableDefault 사용하여 기본값을 설정 
+
+기준 : 수정일 , 내림차순
+```java
+    @GetMapping("/paging")
+    public List<Schedule> findScheduleByPageRequest(
+        @PageableDefault(size = 10 , sort = "modifiedAt", 
+                direction = Sort.Direction.DESC) Pageable pageable
+        ){
+        log.info("sorted = {}" ,pageable.getSort());
+        return scheduleService.findScheduleByPageRequest(pageable);
+    }
+```
+
+```java  
+    //paging 처리
+    public List<Schedule>findScheduleByPageRequest(Pageable pageable){
+        return scheduleRepository.findAll(pageable).getContent();
+    }
+```
+---
+
+### Validation 예외처리
+
+
+- 제약 조건 설정
+```java
+    @NotBlank(message = "username 은 필수값 입니다.")
+    @Size(min = 1, max = 5, message = "username 은 1~5 글자여야 합니다.")
+    private final String username;
+
+    @NotBlank(message = "email 은 필수값 입니다.")
+    @Pattern(regexp = "^[\\w!#$%&'*+/=?`{|}~^.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", message = "이메일 형식이 올바르지 않습니다.")
+    private final String email;
+
+    @NotBlank(message = "password 는 필수값 입니다.")
+    @Size(min = 1,max = 10, message = "password 은 1~10 글자여야 합니다.")
+    private final String password;
+```
+
+검증할 객체에 @Validated 적용
+```java
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUP(
+                @Validated @RequestBody SignUpRequestDto requestDto,
+                BindingResult bindingResult
+        ){
+            //Validation 예외 처리
+            ResponseEntity<?> errorMap = getResponseEntity(bindingResult);
+            if (errorMap != null) return errorMap;
+    
+            SignUpResponseDto signUpResponseDto =
+                    userService.signUp(
+                            requestDto.getUsername(),
+                            requestDto.getPassword(),
+                            requestDto.getEmail()
+                    );
+            return new ResponseEntity<>(signUpResponseDto , HttpStatus.CREATED);
+        }
+```
 
 
 
